@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<% include head_include %>
+ <meta http-equiv="refresh" content="3" />
+</head>
+<body>
+<%- include(header) %>
+
+<div class="container info">
+  <div class="info-form">
+    <h2>You are solving
+      <%if (tasks.length==0) { %>
+          0
+        <% } %>
+        <%if (tasks.length>0) { %>
+            <%= tasks[0]['count_doing'] %>
+        <% } %>
+       task/s!</h2>
+    <!-- <p>Create new task  <a href="/createtask">here!</a></p> -->
+    <!-- <p>You can't create more tasks!</p> -->
+        <div class="info-history">
+          <h3>History</h3>
+          <% for(var i = 0; i < tasks.length ; i++) { %>
+            <%if (tasks[i]['status']!=0) { %>
+              <div class="info-about-task
+              <% if(tasks[i]['status']==1){ %>
+                yellow
+              <% } %>
+              <% if(tasks[i]['status']==2){ %>
+                red
+              <% } %>
+              <% if(tasks[i]['status']==3){ %>
+                green
+              <% } %>
+              ">
+                <h1>Task: <%= tasks[i]['id'] %> | Server: <%= tasks[i]['server_id'] %></h1>
+                <h3>Your input: <%= tasks[i]['num'] %></h3>
+                <h4>Status: <%= tasks[i]['status'] %> | Percentage: <%= tasks[i]['percentage'] %>%</h4>
+                <div class="progress">
+                  <div class="progress-bar
+                  <% if(tasks[i]['status']==1){ %>
+                    bg-warning
+                  <% } %>
+                  <% if(tasks[i]['status']==2){ %>
+                    bg-danger
+                  <% } %>
+                  <% if(tasks[i]['status']==3){ %>
+                    bg-success
+                  <% } %>
+                    " role="progressbar" style="width:  <%= tasks[i]['percentage'] %>%"
+                  aria-valuenow=" <%= tasks[i]['percentage'] %>" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+
+                <%if (tasks[i]['status']==1) { %>
+                    <button onclick="cancel_task(<%= tasks[i]['id'] %>)" class="task-cancel">Cancel task</button>
+                  <% } %>
+              </div>
+            <% } %>
+          <%  } %>
+        </div>
+
+
+        <div class="info-queue">
+          <h3>In queue</h3>
+          <% for(var i = 0; i < tasks.length ; i++) { %>
+            <%if (tasks[i]['status']==0) { %>
+              <div class="info-about-task blue">
+                <h1>Task: <%= tasks[i]['id'] %> %></h1>
+                <h3>Your input: <%= tasks[i]['num'] %></h3>
+              </div>
+            <% } %>
+          <%  } %>
+        </div>
+
+
+  </div>
+</div>
+
+<script>
+function cancel_task(task_id)
+{
+    $.ajax({
+    url:"/cancel_task",
+    method:"POST",
+    data:{
+      task_id:task_id
+    },
+    success:function(response) {
+      alert("Canceled!");
+    },
+   error:function(){
+    alert("error");
+   }
+  });
+}
+
+</script>
+
+
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" ></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>
